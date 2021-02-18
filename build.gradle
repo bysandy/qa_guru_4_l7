@@ -1,14 +1,18 @@
 plugins {
     id 'io.qameta.allure' version '2.8.1' // Latest Plugin Version
     id 'java-library'
+    id 'application'
 }
+
+ext.allureVersion = '2.13.8'
+ext.junitVersion = '5.6.2'
 
 allure {
     autoconfigure = true
-    version = '2.13.8'  // Latest Allure Version
-
+    aspectjweaver = true
+    version = allureVersion
     useJUnit5 {
-        version = '2.13.8' // Latest Allure Version
+        version = allureVersion
     }
 
 }
@@ -18,13 +22,21 @@ repositories {
 }
 
 dependencies {
-    compile 'io.qameta.allure:allure-java-commons:2.13.8'
-    compile 'com.codeborne:selenide:5.18.1'
-    compile 'io.qameta.allure:allure-selenide:2.13.8'
-    testImplementation 'com.codeborne:selenide:5.18.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    testImplementation 'com.github.javafaker:javafaker:1.0.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+    compile([
+            'io.qameta.allure:allure-java-commons:' + allureVersion,
+            'com.codeborne:selenide:5.18.1',
+            'io.qameta.allure:allure-selenide:' + allureVersion
+    ])
+
+    testImplementation([
+            'com.codeborne:selenide:5.18.1',
+            'org.junit.jupiter:junit-jupiter-api:' + junitVersion,
+            'com.github.javafaker:javafaker:1.0.2',
+            'org.hamcrest:hamcrest-all:1.3'
+    ])
+
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitVersion
 }
 
 test {
@@ -32,5 +44,16 @@ test {
     reports {
         junitXml.enabled = false
         html.enabled = true
+    }
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task positive_test(type: Test) {
+    useJUnitPlatform {
+        includeTags 'positive'
     }
 }
