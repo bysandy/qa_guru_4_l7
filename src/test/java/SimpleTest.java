@@ -12,7 +12,7 @@ public class SimpleTest {
     @Tag("positive")
     void successTest() {
         assertEquals(true, true);
-        // assertTrue(true);
+        // assertTrue(true); - for example
     }
 
     @Test
